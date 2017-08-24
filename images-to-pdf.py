@@ -46,10 +46,11 @@ for para in paras:
     if para.endswith('.pdf'):
         toFile = para
 if not toFile:
-    print('Congratulations! You just triggered all of my "if" sentences and travelled through my code and did nothing!\nRTFM pls......')
-    print(__doc__)
-    sys.exit()
-
+#    print('Congratulations! You just triggered all of my "if" sentences and travelled through my code and did nothing!\nRTFM pls......')
+#    print('usage example:\n>>> python images-to-pdf.py 1.png 2.png -o bar123.pdf')
+#    sys.exit()
+    toFile = 'default_name.pdf'
+del para, paras
 
 images = []
 for img in fromFile:
@@ -59,15 +60,43 @@ for img in fromFile:
         for star_img in os.listdir(i):
             if star_img.endswith(j):
                 images.append(i+star_img)
+        del i, j, star_img
     else:
         images.append(img)
 
+
+img_list = []
+del_list = []
+from PIL import Image
+for img in images:
+    try:
+        img = Image.open(img)
+        if img.width > 14399:
+            ratio = 14399.0/img.width
+            img = img.resize((14399, int(ratio*img.height)))
+            img.save(img.filename)
+        if img.height/14399:
+            for i in range(img.height/14399+1):
+                img.crop((0, i*14399, img.width, min((i+1)*14399, img.height))).save(img.filename[:-4]+str(i)+'.png')
+                img_list.append(img.filename[:-4]+str(i)+'.png')
+                del_list.append(img.filename[:-4]+str(i)+'.png')
+            del i
+        else:
+            img_list.append(img.filename)
+    except:
+        pass
+
+
 with open(toFile, 'wb') as f:
-    f.write(img2pdf.convert(images))
+    f.write(img2pdf.convert(img_list))
+
+
+for _ in del_list:
+    os.system('rm ' + _)
+
 
 print('Succesfully convert')
 for img in images:
     print('    '+os.path.abspath(img))
 print('To:')
 print('    '+os.path.abspath(toFile))
-
