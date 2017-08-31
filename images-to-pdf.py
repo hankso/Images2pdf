@@ -10,8 +10,7 @@ Simply input source image(s) (in order) and output pdf name, then the pdf will q
 HELP = "try:\n\
 >>> python images-to-pdf.py 1.png 2.png -o bar123.pdf --delete-source\n\
 or :\n\
->>> python images-to-pdf.py imgs/*.jpg result.pdf -d
-"
+>>> python images-to-pdf.py imgs/*.jpg result.pdf -d"
 
 __doc__ += HELP
 
@@ -26,7 +25,7 @@ paras = sys.argv[1:]
 if not paras:
     print(__doc__)
 
-elif '-h' or 'help' in paras:
+elif '-h' in paras or 'help' in paras or '--help' in paras:
     print(HELP)
 
 else:
